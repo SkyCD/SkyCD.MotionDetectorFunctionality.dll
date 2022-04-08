@@ -6,35 +6,37 @@ Imports System.Reflection.Assembly
 Imports System.Drawing
 Imports System.Data.OleDb
 Imports System.Windows.Forms.Application
+Imports SkyCD.Simple
+Imports SkyCD.Contracts
+Imports SkyAdvancedFunctionsLibrary = SkyCD.AdvancedFunctions
 
 Public Class Main
-    Implements Global.SkyCD.iInterfacePlugIn
+    Implements iInterfacePlugIn
 
     Private Debug As Boolean = False
-    Private Parent As SkyCD.Form1
+    Private Parent As Object
 
     Public Path As String = GetDirectoryName(GetExecutingAssembly().GetName().CodeBase().Remove(0, "file:\\\".Length).Replace("/", "\")) + "\motion\"
-    Public SkyCDSettings As New SkyCD.SCD_XSettings("SkyCD")
+    Public SkyCDSettings As New SCD_XSettings("SkyCD")
     Public db As String = SkyCDSettings.ReadSetting("Database.Connection.String", "", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\temp.mdb")
     Public OleDbConnection1 As New OleDbConnection(db)
     Public odbcDatabase As New OleDbDataAdapter()
 
-    Public Sub Create(ByVal Parent As SkyCD.Form1) Implements SkyCD.iInterfacePlugIn.Create
+    Public Sub Create(ByRef Parent As iMainForm) Implements iInterfacePlugIn.Create
         Me.Parent = Parent
         With Parent
-            .ToolsToolStripMenuItem.DropDownItems.Add("-")
-            .ToolsToolStripMenuItem.DropDownItems.Add("Motion Detector", New Bitmap(16, 16), New EventHandler(AddressOf Me.OnClick)).MergeIndex = 0
-            '.ToolsToolStripMenuItem.DropDownItems.Add("View File", New System.Drawing.Bitmap(16, 16), New System.EventHandler(AddressOf Me.OnClick2)).MergeIndex = 0
-            .ToolsToolStripMenuItem.DropDownItems.Add("-")
+            '.ToolsToolStripMenuItem.DropDownItems.Add("-")
+            '.ToolsToolStripMenuItem.DropDownItems.Add("Motion Detector", New Bitmap(16, 16), New EventHandler(AddressOf Me.OnClick)).MergeIndex = 0
+            '.ToolsToolStripMenuItem.DropDownItems.Add("-")
         End With
     End Sub
 
-    Public Buffer As New SkyCD_Simple.skycd_simple()
-    Public aviID As Integer = Buffer.Add("Movies", SkyCD_Simple.skycd_simple.scdItemType.scdFolder)
-    Public imgID As Integer = Buffer.Add("Pictures", SkyCD_Simple.skycd_simple.scdItemType.scdFolder)
+    Public Buffer As New skycd_simple()
+    Public aviID As Integer = Buffer.Add("Movies", skycd_simple.scdItemType.scdFolder)
+    Public imgID As Integer = Buffer.Add("Pictures", skycd_simple.scdItemType.scdFolder)
     Public lastDate As Date = Date.Now.Date
-    Public caID As Integer = Buffer.Add(lastDate, SkyCD_Simple.skycd_simple.scdItemType.scdFolder, aviID)
-    Public ciID As Integer = Buffer.Add(lastDate, SkyCD_Simple.skycd_simple.scdItemType.scdFolder, imgID)
+    Public caID As Integer = Buffer.Add(lastDate, skycd_simple.scdItemType.scdFolder, aviID)
+    Public ciID As Integer = Buffer.Add(lastDate, skycd_simple.scdItemType.scdFolder, imgID)
 
 
     Public Sub OnClick2(ByVal sender As Object, ByVal e As EventArgs)
@@ -71,7 +73,7 @@ Public Class Main
                 'MsgBox(ex.Message, MsgBoxStyle.Critical, "Error")
                 'End Try
                 'Me.Parent.Text = Me.Buffer.Items(0).Name                
-                For Each Item As SkyCD_Simple.skycd_simple.scdItem In Me.Buffer.Items
+                For Each Item As skycd_simple.scdItem In Me.Buffer.Items
                     If Item.Name = "" Then Continue For
                     Me.odbcDatabase.InsertCommand = New OleDbCommand("INSERT INTO list (`ID`, `Name`, `ParentID`, `Type`, `Properties`,`Size`, `AID`) VALUES ('" + I.ToString + "', '" + SkyAdvancedFunctionsLibrary.Strings.AddSlashes(Item.Name) + "', '" + Item.ParentID.ToString + "', '" + Item.ItemType.ToString + "', '" + SkyAdvancedFunctionsLibrary.Strings.AddSlashes(Item.AdvancedInfo.All.ToString) + "','" + Item.Size.ToString + "','" + Me.Parent.Handle.ToInt64.ToString + "')", Me.OleDbConnection1)
                     I = I + 1
@@ -118,24 +120,24 @@ Public Class Main
         End Try
     End Sub
 
-    Public Function FindChanges() As SkyCD_Simple.skycd_simple
+    Public Function FindChanges() As skycd_simple
         Static C() As FileInfo = (New DirectoryInfo(Me.Path)).GetFiles("*.*")
         Dim files() As FileInfo = (New DirectoryInfo(Me.Path)).GetFiles("*.*")
-        If files.Length > C.Length Then            
+        If files.Length > C.Length Then
             Dim I As Integer, id As Integer
             For I = 0 To files.Length - 1
                 If Not IsInArray(C, files(I)) Then
                     If Not files(I).Exists Then Continue For
                     If Not lastDate.Day = Date.Now.Date.Day Then
                         lastDate = Date.Now.Date
-                        caID = Buffer.Add(lastDate, SkyCD_Simple.skycd_simple.scdItemType.scdFolder, aviID)
-                        ciID = Buffer.Add(lastDate, SkyCD_Simple.skycd_simple.scdItemType.scdFolder, imgID)
+                        caID = Buffer.Add(lastDate, skycd_simple.scdItemType.scdFolder, aviID)
+                        ciID = Buffer.Add(lastDate, skycd_simple.scdItemType.scdFolder, imgID)
                     End If
-                    Select Case LCase(SkyAdvancedFunctionsLibrary.File.GetFileExtension(files(I).FullName))
+                    Select Case LCase(SkyCD.AdvancedFunctions.File.GetFileExtension(files(I).FullName))
                         Case ".avi", ".mpg", ".wmv"
-                            id = Buffer.Add(files(I).Name, SkyCD_Simple.skycd_simple.scdItemType.scdFile, caID)
+                            id = Buffer.Add(files(I).Name, skycd_simple.scdItemType.scdFile, caID)
                         Case ".jpg", ".bmp"
-                            id = Buffer.Add(files(I).Name, SkyCD_Simple.skycd_simple.scdItemType.scdFile, ciID)
+                            id = Buffer.Add(files(I).Name, skycd_simple.scdItemType.scdFile, ciID)
                     End Select
                     Buffer.Items(id).AdvancedInfo.Item("Name") = files(I).Name.ToString
                     Buffer.Items(id).AdvancedInfo.Item("Size") = files(I).Length * 8
@@ -162,7 +164,7 @@ Public Class Main
         Return False
     End Function
 
-    Public Property DebugMode() As Boolean Implements SkyCD.ISkyCDPlugIn.DebugMode
+    Public Property DebugMode() As Boolean Implements ISkyCDPlugIn.DebugMode
         Get
             Return Me.Debug
         End Get
@@ -171,12 +173,12 @@ Public Class Main
         End Set
     End Property
 
-    Public ReadOnly Property HasConfig() As Boolean Implements SkyCD.ISkyCDPlugIn.HasConfig
+    Public ReadOnly Property HasConfig() As Boolean Implements ISkyCDPlugIn.HasConfig
         Get
             Return False
         End Get
     End Property
 
-    Public Sub ShowConfig() Implements SkyCD.ISkyCDPlugIn.ShowConfig
+    Public Sub ShowConfig() Implements ISkyCDPlugIn.ShowConfig
     End Sub
 End Class
