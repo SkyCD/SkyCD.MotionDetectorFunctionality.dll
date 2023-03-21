@@ -32,7 +32,7 @@ jobs:
       run: dotnet pack --output ./artifacts --configuration Release -p:Version=$(git describe --tags --dirty | sed 's/[[:alpha:]|(|[:space:]]//g')            
   
     - name: Uploading artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: build-output
         path: ./artifacts
