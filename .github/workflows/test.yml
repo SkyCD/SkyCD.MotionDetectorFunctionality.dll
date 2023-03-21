@@ -20,8 +20,7 @@ jobs:
           - windows-latest
           - macOS-latest
         dotnet: 
-          - '5.0.x'
-          - '6.0.x'
+          - '7.0.x'
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
