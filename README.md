@@ -11,7 +11,7 @@ This plugin can be installed by copying into the `Plug-ins` folder of SkyCD.
 
 ## Latest Release
 
-The latest release build can be found in [https://github.com/orgs/SkyCD/packages?repo_name=SkyCD.MotionDetectorFunctionality.dll](Project packages).
+The latest release build can be found in [Project packages](https://github.com/orgs/SkyCD/packages?repo_name=SkyCD.MotionDetectorFunctionality.dll).
 
 
 ## License
