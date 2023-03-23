@@ -16,4 +16,4 @@ The latest release build can be found in [Project packages](https://github.com/o
 
 ## License
 
-The license for this plugin can be found at LICENSE file (MIT).
+The license for this plugin can be found at [LICENSE](LICENSE) file (MIT).
