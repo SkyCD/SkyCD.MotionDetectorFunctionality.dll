@@ -96,6 +96,6 @@
     <PackageReference Include="SkyCD.AdvancedFunctions.dll" Version="0.3.0" />
     <PackageReference Include="SkyCD.Contracts.dll" Version="1.2.0" />
     <PackageReference Include="SkyCD.SCD_XSettings.dll" Version="0.3.0" />
-    <PackageReference Include="SkyCD.Simple" Version="0.2.0" />
+    <PackageReference Include="SkyCD.Simple" Version="0.3.0" />
   </ItemGroup>
 </Project>
