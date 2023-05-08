@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0-windows</TargetFramework>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
@@ -96,6 +96,6 @@
     <PackageReference Include="SkyCD.AdvancedFunctions.dll" Version="0.3.0" />
     <PackageReference Include="SkyCD.Contracts.dll" Version="1.2.0" />
     <PackageReference Include="SkyCD.SCD_XSettings.dll" Version="0.3.0" />
-    <PackageReference Include="SkyCD.Simple" Version="0.3.0" />
+    <PackageReference Include="SkyCD.Simple" Version="0.4.0" />
   </ItemGroup>
 </Project>
